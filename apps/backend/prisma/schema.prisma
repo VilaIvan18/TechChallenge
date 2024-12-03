@@ -12,3 +12,23 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Account {
+  id           String        @id @default(cuid())
+  iban         String        @unique
+  balance      Float         @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  accountId     String
+  type          String // deposit, withdraw, transfer
+  amount        Float
+  balanceAfter  Float
+  recipientIban String? // Only for transfer
+  createdAt     DateTime @default(now())
+  account       Account  @relation(fields: [accountId], references: [id])
+}
