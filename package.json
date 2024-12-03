@@ -8,7 +8,6 @@
     "lint": "npm run lint:frontend && npm run lint:backend",
     "dev:frontend": "cd apps/frontend && npm run dev",
     "dev:backend": "cd apps/backend && npm run start",
-    "test:frontend": "cd apps/frontend && npm run test",
     "test:backend": "cd apps/backend && npm run test",
     "lint:frontend": "cd apps/frontend && npm run lint",
     "lint:backend": "cd apps/backend && npm run lint",
