@@ -127,4 +127,4 @@ jobs:
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
         run: |
           cd apps/backend
-          npm run migration:run
+          npm run prisma:migrate:deploy
