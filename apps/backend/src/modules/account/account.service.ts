@@ -2,6 +2,7 @@ import {
   Injectable,
   BadRequestException,
   UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { AccountRepository } from './account.repository';
 import { DepositWithdrawCreateDto } from './dto/deposit-withdraw-create.dto';
@@ -15,6 +16,10 @@ export class AccountService {
 
   async createAccount(createAccountDto: AccountCreateDto) {
     const { iban, userId } = createAccountDto;
+
+    if (!isValidIban(iban)) {
+      throw new BadRequestException('Invalid IBAN');
+    }
 
     const existingAccount =
       await this.accountRepository.findAccountByIban(iban);
@@ -89,6 +94,12 @@ export class AccountService {
   }
 
   async transfer(dto: TransferCreateDto, userId: string) {
+    if (dto.fromIban === dto.toIban) {
+      throw new BadRequestException(
+        'You cannot transfer money to the same IBAN',
+      );
+    }
+
     if (!isValidIban(dto.toIban)) {
       throw new BadRequestException('Invalid IBAN');
     }
@@ -183,11 +194,15 @@ export class AccountService {
     };
   }
 
-  private async getAccountOrFail(iban: string) {
-    const account = await this.accountRepository.findAccountByIban(iban);
-    if (!account) {
-      throw new BadRequestException('Account not found');
-    }
-    return account;
+  async getAllUserAccounts(userId: string) {
+    const accounts = await this.accountRepository.findAccountsByUserId(userId);
+
+    return accounts.map((account) => ({
+      id: account.id,
+      iban: account.iban,
+      balance: account.balance,
+      createdAt: account.createdAt,
+      updatedAt: account.updatedAt,
+    }));
   }
 }

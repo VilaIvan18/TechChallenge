@@ -47,4 +47,11 @@ export class AccountRepository {
       },
     });
   }
+
+  async findAccountsByUserId(userId: string) {
+    return this.prisma.account.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
 }
