@@ -13,13 +13,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String
+  accounts  Account[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
 model Account {
   id           String        @id @default(cuid())
   iban         String        @unique
   balance      Float         @default(0)
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  transactions Transaction[]
 }
 
 model Transaction {
@@ -28,7 +39,8 @@ model Transaction {
   type          String // deposit, withdraw, transfer
   amount        Float
   balanceAfter  Float
-  recipientIban String? // Only for transfer
+  senderIban    String? // For transfer sender details
+  recipientIban String? // For transfer recipient details
   createdAt     DateTime @default(now())
   account       Account  @relation(fields: [accountId], references: [id])
 }
