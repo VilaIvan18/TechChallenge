@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   lint-and-test:
@@ -127,4 +127,4 @@ jobs:
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
         run: |
           cd apps/backend
-          npm run migrate:deploy
+          npm run prisma:migrate:deploy
