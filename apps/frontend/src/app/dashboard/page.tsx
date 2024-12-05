@@ -17,7 +17,7 @@ export default function DashboardPage() {
 
   const handleUpdateBalance = (newBalance: number) => {
     if (selectedAccount) {
-      setSelectedAccount((prev: any) => ({
+      setSelectedAccount((prev) => ({
         ...prev,
         balance: newBalance,
       }));

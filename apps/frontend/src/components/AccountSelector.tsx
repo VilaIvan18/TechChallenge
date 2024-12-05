@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { accountService } from "@/services/account-service";
 import { AxiosError } from "axios";
 
@@ -20,25 +20,19 @@ export function AccountSelector({ onSelectAccount }: AccountSelectorProps) {
   const [newIban, setNewIban] = useState("");
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchAccounts();
-  }, [onSelectAccount]);
-
-  const fetchAccounts = async () => {
+  const fetchAccounts = useCallback(async () => {
     try {
       const response = await accountService.getAccounts();
       setAccounts(response.data);
-
-      // Select first account by default
-      if (response.data.length > 0) {
-        const firstAccount = response.data[0];
-        setSelectedAccount(firstAccount);
-        onSelectAccount(firstAccount);
-      }
     } catch (err) {
+      console.log(err);
       setError("Failed to fetch accounts");
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchAccounts();
+  }, [onSelectAccount, fetchAccounts]);
 
   const handleCreateAccount = async () => {
     if (!newIban) {

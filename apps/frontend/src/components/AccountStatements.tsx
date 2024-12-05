@@ -25,19 +25,20 @@ export function AccountStatements({ selectedAccount }: AccountStatementProps) {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    const fetchAccountStatement = async () => {
+      try {
+        const response = await accountService.getAccountStatement(
+          selectedAccount.iban
+        );
+        setTransactions(response.data.transactions);
+      } catch (err) {
+        console.log(err);
+        setError("Failed to fetch account statement");
+      }
+    };
+
     if (selectedAccount.iban) fetchAccountStatement();
   }, [selectedAccount]);
-
-  const fetchAccountStatement = async () => {
-    try {
-      const response = await accountService.getAccountStatement(
-        selectedAccount.iban
-      );
-      setTransactions(response.data.transactions);
-    } catch (err) {
-      setError("Failed to fetch account statement");
-    }
-  };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">

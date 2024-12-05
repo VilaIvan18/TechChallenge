@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { accountService } from "@/services/account-service";
+import { AxiosError } from "axios";
 
 type AccountOperationsProps = {
   account: {
@@ -54,8 +55,16 @@ export function AccountOperations({
       setAmount("");
       setToIban("");
       setError("");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Operation failed");
+    } catch (err) {
+      const errorMessage = (
+        (err as AxiosError)?.response?.data as { message: string }
+      ).message;
+
+      if (errorMessage) {
+        setError(errorMessage);
+      } else {
+        setError("Failed to create account");
+      }
     }
   };
 
