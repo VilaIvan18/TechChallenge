@@ -2,7 +2,6 @@ import {
   Injectable,
   BadRequestException,
   UnauthorizedException,
-  NotFoundException,
 } from '@nestjs/common';
 import { AccountRepository } from './account.repository';
 import { DepositWithdrawCreateDto } from './dto/deposit-withdraw-create.dto';
@@ -135,7 +134,7 @@ export class AccountService {
 
     await this.accountRepository.createTransaction({
       accountId: senderAccount.id,
-      type: 'transfer',
+      type: 'transfer sent',
       amount: dto.amount,
       balanceAfter: senderUpdatedBalance,
       senderIban: senderAccount.iban,
@@ -144,7 +143,7 @@ export class AccountService {
 
     await this.accountRepository.createTransaction({
       accountId: recipientAccount.id,
-      type: 'transfer',
+      type: 'transfer received',
       amount: dto.amount,
       balanceAfter: recipientUpdatedBalance,
       senderIban: senderAccount.iban,

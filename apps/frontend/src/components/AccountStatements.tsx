@@ -70,13 +70,13 @@ export function AccountStatements({ selectedAccount }: AccountStatementProps) {
                 <td
                   className={`p-3 text-right ${
                     transaction.type === "deposit" ||
-                    transaction.type === "transfer_received"
+                    transaction.type === "transfer received"
                       ? "text-green-600"
                       : "text-red-600"
                   }`}
                 >
                   {transaction.type === "deposit" ||
-                  transaction.type === "transfer_received"
+                  transaction.type === "transfer received"
                     ? "+ "
                     : "- "}
                   {transaction.amount.toFixed(2)}
