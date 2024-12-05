@@ -98,13 +98,6 @@ jobs:
           name: backend-build
           path: apps/backend/dist
 
-      - name: Run Database Migrations
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          cd apps/backend
-          npm run migrate:deploy
-
       - name: Deploy to Render
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
