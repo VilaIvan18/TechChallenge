@@ -48,6 +48,9 @@ jobs:
       - name: Build Frontend
         run: npm run build:frontend
 
+      - name: Out Frontend
+        run: cd apps/frontend && ls -la
+
       - name: Build Backend
         run: npm run build:backend
 
@@ -97,13 +100,6 @@ jobs:
         with:
           name: backend-build
           path: apps/backend/dist
-
-      - name: Run Database Migrations
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          cd apps/backend
-          npm run migrate:deploy
 
       - name: Deploy to Render
         env:
