@@ -16,6 +16,10 @@ export class AccountService {
   async createAccount(createAccountDto: AccountCreateDto) {
     const { iban, userId } = createAccountDto;
 
+    if (!isValidIban(iban)) {
+      throw new BadRequestException('Invalid IBAN');
+    }
+
     const existingAccount =
       await this.accountRepository.findAccountByIban(iban);
     if (existingAccount) {
@@ -89,6 +93,12 @@ export class AccountService {
   }
 
   async transfer(dto: TransferCreateDto, userId: string) {
+    if (dto.fromIban === dto.toIban) {
+      throw new BadRequestException(
+        'You cannot transfer money to the same IBAN',
+      );
+    }
+
     if (!isValidIban(dto.toIban)) {
       throw new BadRequestException('Invalid IBAN');
     }
@@ -124,7 +134,7 @@ export class AccountService {
 
     await this.accountRepository.createTransaction({
       accountId: senderAccount.id,
-      type: 'transfer',
+      type: 'transfer sent',
       amount: dto.amount,
       balanceAfter: senderUpdatedBalance,
       senderIban: senderAccount.iban,
@@ -133,7 +143,7 @@ export class AccountService {
 
     await this.accountRepository.createTransaction({
       accountId: recipientAccount.id,
-      type: 'transfer',
+      type: 'transfer received',
       amount: dto.amount,
       balanceAfter: recipientUpdatedBalance,
       senderIban: senderAccount.iban,
@@ -183,11 +193,15 @@ export class AccountService {
     };
   }
 
-  private async getAccountOrFail(iban: string) {
-    const account = await this.accountRepository.findAccountByIban(iban);
-    if (!account) {
-      throw new BadRequestException('Account not found');
-    }
-    return account;
+  async getAllUserAccounts(userId: string) {
+    const accounts = await this.accountRepository.findAccountsByUserId(userId);
+
+    return accounts.map((account) => ({
+      id: account.id,
+      iban: account.iban,
+      balance: account.balance,
+      createdAt: account.createdAt,
+      updatedAt: account.updatedAt,
+    }));
   }
 }
