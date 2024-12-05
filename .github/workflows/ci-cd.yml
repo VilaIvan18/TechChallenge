@@ -48,9 +48,6 @@ jobs:
       - name: Build Frontend
         run: npm run build:frontend
 
-      - name: Out Frontend
-        run: cd apps/frontend && ls -la
-
       - name: Build Backend
         run: npm run build:backend
 

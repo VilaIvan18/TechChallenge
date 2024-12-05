@@ -14,9 +14,7 @@
 /coverage
 
 # next.js
-# Next one is commented only in order to make ci/cd deploy work. 
-# Possible to do without it, but decided to do everything as described in the task.
-#/.next/
+/.next/
 /out/
 
 # production
